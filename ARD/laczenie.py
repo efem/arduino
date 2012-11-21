@@ -1,2 +1,4 @@
 import serial
 
+print 'Zaimportowano'
+
