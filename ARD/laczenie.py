@@ -15,7 +15,7 @@ ser = serial.Serial("COM4", 9600)
 
 
 
-
+#dodac obsluge wyjatkow
 conn = MySQLdb.connect("127.0.0.1", "root", "r00t", "test")
 tag= "TAG"
 while 1:
@@ -26,7 +26,7 @@ while 1:
     
     
     if rfid.find(tag,0) >= 0:
-        #print rfid
+        print rfid
         
         id = rfid[4:16]
         print id

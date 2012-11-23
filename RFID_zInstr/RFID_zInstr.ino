@@ -46,9 +46,9 @@ void loop(){
   duration = pulseIn(inPin, HIGH);
   cm = microsecondsToCentimeters(duration);
   
-  Serial.print(cm);
-  Serial.print("cm");
-  Serial.println();
+  //Serial.print(cm);
+  //Serial.print("cm");
+  //Serial.println();
   delay(500); //ODCZYT CO 1/2 SEKUNDY
   if (cm < 20)//**************************************************************************SPRAWDZENIE ODLEGLOSCI OD CZUJNIKA
   {  
@@ -68,24 +68,20 @@ void loop(){
     {
       wypisz();
     }
-    if (Serial.available() > 0 || buttonState == HIGH) 
-     {
-      incomingByte = Serial.read(); // SPRAWDZAMY BAJT
-      if (incomingByte==49 || buttonState == HIGH) // JESLI 1 = 49 ASCII LUB PRZYCISK WCISNIETY TO OTWORZ DRZWI
-      {
-        Serial.print("AUA!");
-        digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-        delay(3000);               // wait for a second
-        digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-        delay(1);   
-      }
-                  // say what you got:
-      //Serial.print("I received: ");
-      //Serial.println(incomingByte, DEC);
-      // dac odczekanie 5 sekund
-     }
+    
+    
+    if (Serial.available() > 0)
+    {
+    odpal();
+    } 
+  
     msg="";
   }
+  if (buttonState == HIGH)
+  {
+    odpal();
+  }
+  RFID.flush();
 }
 
 void wypisz(){
@@ -103,4 +99,23 @@ void wypisz(){
 long microsecondsToCentimeters(long microseconds) //ZAMIANA MIKROSEKUND ODPOWIEDZI NA CENTRYMETRY ODLEGLOSCI
 {
   return microseconds / 29 / 2;
+}
+void odpal()
+{     
+  if (Serial.available() > 0)
+  {
+      incomingByte = Serial.read(); // SPRAWDZAMY BAJT
+      if (incomingByte==49 || buttonState == HIGH) // JESLI 1 = 49 ASCII LUB PRZYCISK WCISNIETY TO OTWORZ DRZWI
+      {
+        Serial.print("AUA!");
+        digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+        delay(3000);               // wait for a second
+        digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+        delay(1);   
+      }
+                  // say what you got:
+      //Serial.print("I received: ");
+      //Serial.println(incomingByte, DEC);
+      // dac odczekanie 5 sekund
+  }
 }
