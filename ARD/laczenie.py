@@ -26,15 +26,18 @@ while 1:
     
     
     if rfid.find(tag,0) >= 0:
-        print rfid
+        #print rfid
         
         id = rfid[4:16]
         print id
         c = conn.cursor()
         c.execute("SELECT * FROM pracownicy WHERE karta='%s'" % id)
+       
+            
         for rec in c.fetchall():
-            print "ID: %d\nNick: %s\nHaslo: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
-
-
+            print "ID: %d\nNick: %s\nNazwisko: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
+            ser.write("1")
+        #ser.write("1")
+    ser.write("0")
 
 ser.close()
