@@ -21,7 +21,7 @@ tag= "TAG"
 while 1:
     rfid = ser.readline()
     rfid = str(rfid)
-    #print rfid
+    print rfid
     #print rfid.find(tag,-1)
     
     
@@ -36,6 +36,7 @@ while 1:
             
         for rec in c.fetchall():
             print "ID: %d\nNick: %s\nNazwisko: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
+            #ser.flush()
             ser.write("1")
         #ser.write("1")
     ser.write("0")

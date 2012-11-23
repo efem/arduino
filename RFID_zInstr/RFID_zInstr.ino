@@ -72,16 +72,21 @@ void loop(){
     
     if (Serial.available() > 0)
     {
-    odpal();
-    } 
+    incomingByte = Serial.read(); // SPRAWDZAMY BAJT
+    Serial.print (incomingByte);
+    if (incomingByte==49) // JESLI 1 = 49 ASCII LUB PRZYCISK WCISNIETY TO OTWORZ DRZWI
+      {
+      odpal();
+      } 
   
     msg="";
-  }
-  if (buttonState == HIGH)
+    }
+  if (buttonState == HIGH) //************ SPRAWDZ CZY WCISNIETY PRZYCISK
   {
     odpal();
   }
-  RFID.flush();
+
+}
 }
 
 void wypisz(){
@@ -91,7 +96,7 @@ void wypisz(){
     //digitalWrite(txPin, LOW); //wylaczam pin, zeby nie czytao ciagle
     //digitalWrite(255, HIGH);
     //delay(5000); //czas na otwarcie zamka - zakomentowane zeby nie bylo w tym miejscu LAGa
-    RFID.flush(); //czyszcze bufor, czy co bo kurwa dokumentacji brak do tego, albo ja ulomny
+    RFID.flush(); //czyszcze bufor
     //digitalWrite(txPin, HIGH); //odpalam pin
     //digitalWrite(255, LOW);
 }
@@ -101,21 +106,19 @@ long microsecondsToCentimeters(long microseconds) //ZAMIANA MIKROSEKUND ODPOWIED
   return microseconds / 29 / 2;
 }
 void odpal()
-{     
-  if (Serial.available() > 0)
-  {
-      incomingByte = Serial.read(); // SPRAWDZAMY BAJT
-      if (incomingByte==49 || buttonState == HIGH) // JESLI 1 = 49 ASCII LUB PRZYCISK WCISNIETY TO OTWORZ DRZWI
-      {
-        Serial.print("AUA!");
+{
+Serial.print("ODPAL!");  
+ 
+      
+        Serial.println("AUA!");
         digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
         delay(3000);               // wait for a second
         digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
         delay(1);   
-      }
+        RFID.flush();
                   // say what you got:
       //Serial.print("I received: ");
       //Serial.println(incomingByte, DEC);
       // dac odczekanie 5 sekund
-  }
+  
 }
