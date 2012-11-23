@@ -17,14 +17,23 @@ ser = serial.Serial("COM4", 9600)
 
 
 conn = MySQLdb.connect("127.0.0.1", "root", "r00t", "test")
-rfid = ser.read()
-print rfid
-#while 1:
-   
-#    c = conn.cursor()
-#    c.execute("SELECT * FROM pracownicy")
-#    for rec in c.fetchall():
-#        print "ID: %d\nNick: %s\nHaslo: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
+tag= "TAG"
+while 1:
+    rfid = ser.readline()
+    rfid = str(rfid)
+    #print rfid
+    #print rfid.find(tag,-1)
+    
+    
+    if rfid.find(tag,0) >= 0:
+        print rfid
+        
+        id = rfid[4:16]
+        print id
+        c = conn.cursor()
+        c.execute("SELECT * FROM pracownicy WHERE karta='%s'" % id)
+        for rec in c.fetchall():
+            print "ID: %d\nNick: %s\nHaslo: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
 
 
 
