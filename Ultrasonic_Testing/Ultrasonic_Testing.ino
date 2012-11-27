@@ -14,6 +14,7 @@ const int buttonPin = 4; //przycisk z wewnatrz
 const int odleglosc = 30; //odglosc jaka wzbudza uklad rfid (w cm)
 int buttonState = 0; //stan przycisku wew.
 int ileCM; //odczyt zujnika
+int przychodzacyBajt = 0;
 
 String msg; //TAG
 
@@ -22,11 +23,11 @@ char c; //zbiera znaki do TAGa
 
 
 void setup() {
-    Serial.begin( 9600 );
-    pinMode(led, OUTPUT);
-    pinMode(buttonPin, INPUT);
-    RFID.begin(9600);
-    Serial.println("RFID Ready");
+  Serial.begin( 9600 );
+  pinMode(led, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  RFID.begin(9600);
+  Serial.println("RFID Ready");
 }
 
 void loop()
@@ -34,33 +35,33 @@ void loop()
   buttonState = digitalRead(buttonPin);
   //odpalCzujnik();
   //ileCM = odpalCzujnik();
-  
+  RFID.flush();
   if (odpalCzujnik() < odleglosc)
   {
-     wlaczRFID(true); //*********************************************UAKTYWNIKJ PIN OD RFID
-     RFID.flush();
-     czytajRFID();  //*********************************************************CZYTAJ RFID
+    wlaczRFID(true); //*********************************************UAKTYWNIKJ PIN OD RFID
+    //RFID.flush();
+    czytajRFID();  //*********************************************************CZYTAJ RFID
   }
   else if (odpalCzujnik() >= odleglosc)
   {
-      wlaczRFID(false); //***********************************************WYGAS PIN OD RFID
+    wlaczRFID(false); //***********************************************WYGAS PIN OD RFID
   }
-  
+
   if (buttonState == HIGH)
   {
-      zapal();
+    zapal();
   } 
   else if (buttonState == LOW)
   {
-      zgas();
+    zgas();
   }
- 
-  
+
+
 }
 int odpalCzujnik()
 {
-    long duration, inches, cm;
-  
+  long duration, inches, cm;
+
   pinMode(pingPin, OUTPUT);
   digitalWrite(pingPin, LOW);
   delayMicroseconds(2);
@@ -76,7 +77,7 @@ int odpalCzujnik()
   //Serial.print("cm");
   Serial.println();
   delay(300);
-  
+
   return cm;
 }
 long microsecondsToCentimeters(long microseconds)
@@ -86,7 +87,7 @@ long microsecondsToCentimeters(long microseconds)
 void zapal()
 {
   digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1);
+  delay(1000);
 }
 void zgas()
 {
@@ -96,33 +97,54 @@ void zgas()
 void wlaczRFID(boolean wlacz) {
   if (wlacz == true) { 
     digitalWrite(txPin, LOW); //enables the RDIF reader and turns on the diode on the arduino
-  } else {                               //disables the RDIF reader and turns off the diode on the arduino
+  } 
+  else {                               //disables the RDIF reader and turns off the diode on the arduino
     digitalWrite(txPin, HIGH);   
   }
 }
+int x=0;
 void czytajRFID()
 {
-  
+x++;
   while(RFID.available()>0)
-         {
-            c=RFID.read(); 
-            msg += c;
-   
-            Serial.println(msg);  //przyrastajacy TAG
-            Serial.println(msg.length()); //      
-          }
+  {
+    c=RFID.read(); 
+    msg += c;
+
+    Serial.println(msg);  //przyrastajacy TAG
+    Serial.println(msg.length()); //  
     
-    if(msg.length()>10) // DLUGOSVC WIADOMOSCI
-    {
-      wypisz();
-    }
+  }
+    Serial.print("X: ");
+    Serial.println(x);
+  if(msg.length()>10) // DLUGOSVC WIADOMOSCI
+  {
+    wypisz();
+  }
+x=0;
 }
-void wypisz(){
-    msg=msg.substring(1,13);
-    Serial.print("TAG:" );
-    Serial.println(msg);
-    RFID.flush(); //czyszcze bufor
+int z=0;
+void wypisz(){ //odpala 3 razy ta funkcje - CZEMU??
+  z++;
+  msg=msg.substring(1,13);
+  Serial.print("TAG:" );
+  Serial.println(msg);
+  
+  Serial.print("Z: ");
+  Serial.println(z);
+  msg="";
+  przychodzacyBajt = Serial.read();
+  Serial.print("Przychodzacy: ");
+  Serial.print(przychodzacyBajt);
+  if (przychodzacyBajt > 0)
+  {
+    Serial.println("########################SEZAMIE OTWORZ SIE!!!#################################");
+    zapal();
+  }
+  RFID.flush(); //czyszcze bufor
+  
 
 }
-  
-  
+
+
+
