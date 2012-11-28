@@ -10,6 +10,7 @@ SoftwareSerial RFID = SoftwareSerial(rxPin, txPin);
 const int pingPin = 13; //do czujnika
 const int inPin = 12; //do czujnika
 const int led = 8; //niebieska dioda
+const int ledCZ = 7; //czerwona dioda
 const int buttonPin = 4; //przycisk z wewnatrz
 const int odleglosc = 30; //odglosc jaka wzbudza uklad rfid (w cm)
 int buttonState = 0; //stan przycisku wew.
@@ -25,6 +26,7 @@ char c; //zbiera znaki do TAGa
 void setup() {
   Serial.begin( 9600 );
   pinMode(led, OUTPUT);
+  pinMode(ledCZ, OUTPUT);
   pinMode(buttonPin, INPUT);
   RFID.begin(9600);
   Serial.println("RFID Ready");
@@ -41,6 +43,7 @@ void loop()
     wlaczRFID(true); //*********************************************UAKTYWNIKJ PIN OD RFID
     //RFID.flush();
     czytajRFID();  //*********************************************************CZYTAJ RFID
+    sprawdzBajt();
   }
   else if (odpalCzujnik() >= odleglosc)
   {
@@ -102,6 +105,15 @@ void wlaczRFID(boolean wlacz) {
     digitalWrite(txPin, HIGH);   
   }
 }
+void odmowaDostepu()
+{
+  digitalWrite(ledCZ, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);
+  digitalWrite(ledCZ, LOW);   // turn the LED on (HIGH is the voltage level)
+  delay(1);
+  
+}
+
 int x=0;
 void czytajRFID()
 {
@@ -133,17 +145,25 @@ void wypisz(){ //odpala 3 razy ta funkcje - CZEMU??
   Serial.print("Z: ");
   Serial.println(z);
   msg="";
+ 
+  RFID.flush(); //czyszcze bufor
+  
+
+}
+void sprawdzBajt()
+{
   przychodzacyBajt = Serial.read();
   Serial.print("Przychodzacy: ");
   Serial.print(przychodzacyBajt);
-  if (przychodzacyBajt > 0)
+  if (przychodzacyBajt == 49)
   {
     Serial.println("########################SEZAMIE OTWORZ SIE!!!#################################");
     zapal();
   }
-  RFID.flush(); //czyszcze bufor
-  
-
+  else if (przychodzacyBajt == 48)
+  {
+    odmowaDostepu();
+  }
 }
 
 

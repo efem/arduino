@@ -33,12 +33,12 @@ while 1:
         c = conn.cursor()
         c.execute("SELECT * FROM pracownicy WHERE karta='%s'" % id)
        
-            
+           
         for rec in c.fetchall():
             ser.write("1")
             print "ID: %d\nNick: %s\nNazwisko: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
             #ser.flush()
-            
+        ser.write("0")    # trzeba zalozyc ifa na fetchall i jesli >0 to zapisz 1 a jesli nie to zapisz 0
         #ser.write("1")
     #ser.write("0")
 
