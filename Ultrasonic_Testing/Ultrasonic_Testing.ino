@@ -38,6 +38,7 @@ void loop()
   //odpalCzujnik();
   //ileCM = odpalCzujnik();
   RFID.flush();
+  wlaczRFID(false); //domylsnym stanem jest wylaczenie odczytu z RFID
   if (odpalCzujnik() < odleglosc)
   {
     wlaczRFID(true); //*********************************************UAKTYWNIKJ PIN OD RFID
@@ -45,10 +46,10 @@ void loop()
     czytajRFID();  //*********************************************************CZYTAJ RFID
     sprawdzBajt();
   }
-  else if (odpalCzujnik() >= odleglosc)
-  {
-    wlaczRFID(false); //***********************************************WYGAS PIN OD RFID
-  }
+  //else if (odpalCzujnik() >= odleglosc)
+  //{
+  // wlaczRFID(false); //***********************************************WYGAS PIN OD RFID (albo tutaj albo przed ifem na odpalCzujnij, ale testy mowia, ze tutaj lepiej)
+  //}
 
   if (buttonState == HIGH)
   {
