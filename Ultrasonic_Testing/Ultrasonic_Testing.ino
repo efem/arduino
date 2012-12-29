@@ -21,7 +21,6 @@ const int serwoPin = 10; //pin serwa
 int buttonState = 0; //stan przycisku wew.
 int ileCM; //odczyt zujnika
 int przychodzacyBajt = 0; //przychodzacy bajt
-int pozycja = 0; //pocztakowa pozycja serwa
 
 String msg; //TAG
 
@@ -197,7 +196,7 @@ void buzzAKCEPTACJA()
 }
 void otworz()
 {
-  myservo.write(pozycja);              // tell servo to go to position in variable 'pos' 
+  myservo.write(180);              // ustaw serwo na maksymalna otwarcie
   delay(5000);
-  myservo.write(0); 
+  myservo.write(0);  //ustaw serwo na zamkniecie
 }
