@@ -16,8 +16,10 @@ ser = serial.Serial("COM4", 9600)
 
 
 #dodac obsluge wyjatkow
-conn = MySQLdb.connect("127.0.0.1", "root", "r00t", "test")
+conn = MySQLdb.connect("85.17.145.35", "efem_arduino", "arduino", "efem_arduino")
 tag= "TAG"
+pomieszczenie="1";
+
 while 1:
     rfid = ser.readline()
     rfid = str(rfid)
@@ -31,13 +33,18 @@ while 1:
         id = rfid[4:16]
         #print id
         c = conn.cursor()
-        c.execute("SELECT * FROM pracownicy WHERE karta='%s'" % id)
+        zmienna = "SELECT * FROM uprawnienia WHERE ID_pracownik = (SELECT ID_pracownik FROM pracownicy WHERE karta='%s') AND ID_pomieszczenie='%s'" % (id, pomieszczenie)
+        print zmienna;
+        c.execute(zmienna)
         t = c.fetchall()
         k = len(t)
         if k > 0:
             ser.write("1")
             for rec in t:
-                print "ID: %d\nNick: %s\nNazwisko: %s\nKarta: %s\n" % (rec[0], rec[1], rec[2], rec[3])
+                umiesc = "INSERT INTO logi VALUES (NULL, '%s', '%s', NULL)" % (rec[1], pomieszczenie)
+                print umiesc
+                c.execute(umiesc)
+                print "ID: %s\nDostep: OK\nDostep zalogowano: OK" % id
         else:
             ser.write("0")
             

@@ -1,10 +1,10 @@
 import MySQLdb
 
 
-conn = MySQLdb.connect("127.0.0.1", "root", "r00t", "test")
+conn = MySQLdb.connect("85.17.145.35", "efem_arduino", "arduino", "efem_arduino")
 
 c = conn.cursor()
-c.execute("SELECT * FROM pracownicy WHERE imie = 'Jan'")
+c.execute("SELECT * FROM pracownicy WHERE imie = 'Peter'")
 #print c.fetchall()
 t = c.fetchall()
 k = len(t)

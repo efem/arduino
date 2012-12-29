@@ -1,21 +1,27 @@
 #include <Ultrasonic.h>
 #include <SoftwareSerial.h>
+#include <Servo.h> 
+ 
 
 #define rxPin 2
 #define txPin 3
 
 SoftwareSerial RFID = SoftwareSerial(rxPin, txPin);
+Servo myservo; 
 
-
+const int buzzer = 11; //buzzer
 const int pingPin = 13; //do czujnika
 const int inPin = 12; //do czujnika
 const int led = 8; //niebieska dioda
 const int ledCZ = 7; //czerwona dioda
 const int buttonPin = 4; //przycisk z wewnatrz
 const int odleglosc = 30; //odglosc jaka wzbudza uklad rfid (w cm)
+const int serwoPin = 10; //pin serwa
+
 int buttonState = 0; //stan przycisku wew.
 int ileCM; //odczyt zujnika
-int przychodzacyBajt = 0;
+int przychodzacyBajt = 0; //przychodzacy bajt
+int poyzcja = 0; //pocztakowa pozycja serwa
 
 String msg; //TAG
 
@@ -28,8 +34,12 @@ void setup() {
   pinMode(led, OUTPUT);
   pinMode(ledCZ, OUTPUT);
   pinMode(buttonPin, INPUT);
+  pinMode(buzzer, OUTPUT);
+  myservo.attach(serwoPin);
   RFID.begin(9600);
   Serial.println("RFID Ready");
+  
+
 }
 
 void loop()
@@ -160,12 +170,33 @@ void sprawdzBajt()
   {
     Serial.println("########################SEZAMIE OTWORZ SIE!!!#################################");
     zapal();
+    buzzAKCEPTACJA();
+    otworz();
+    RFID.flush(); //czyszcze bufor
   }
   else if (przychodzacyBajt == 48)
   {
     odmowaDostepu();
+    buzzODMOWA();
+    RFID.flush(); //czyszcze bufor
   }
 }
-
-
-
+void buzzODMOWA()
+{
+   for (int i=0; i<=2;i++){
+   tone(11, 500, 100);
+   delay(200);
+   }
+   noTone(11);
+}
+void buzzAKCEPTACJA()
+{
+   tone(11, 1000, 1000);
+   delay(1000);
+   noTone(11);
+}
+void otworz()
+{
+  myservo.write(pos);              // tell servo to go to position in variable 'pos' 
+  delay(5000);
+}
