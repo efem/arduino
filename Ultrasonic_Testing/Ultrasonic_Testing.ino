@@ -34,7 +34,7 @@ void setup() {
   pinMode(ledCZ, OUTPUT);
   pinMode(buttonPin, INPUT);
   pinMode(buzzer, OUTPUT);
-  myservo.attach(serwoPin);
+  
   RFID.begin(9600);
   Serial.println("RFID Ready");
   
@@ -196,7 +196,12 @@ void buzzAKCEPTACJA()
 }
 void otworz()
 {
-  myservo.write(180);              // ustaw serwo na maksymalna otwarcie
-  delay(5000);
+  myservo.attach(serwoPin);
   myservo.write(0);  //ustaw serwo na zamkniecie
+  delay(200);
+  myservo.write(170);              // ustaw serwo na maksymalna otwarcie
+  delay(2000);
+  myservo.write(0);  //ustaw serwo na zamkniecie
+  delay(200);
+  myservo.detach();
 }
