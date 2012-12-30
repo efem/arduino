@@ -54,7 +54,11 @@ void loop()
     //RFID.flush();
     czytajRFID();  //*********************************************************CZYTAJ RFID
     sprawdzBajt();
+    //RFID.flush();
+    //Serial.flush();
   }
+    RFID.flush(); //zapobiegamy sytuacji gdzie 2 razy odczyta i wpusci drugiego czlowieka po znalezieniu sie w zasiegu czujnika
+    //Serial.flush();
   //else if (odpalCzujnik() >= odleglosc)
   //{
   // wlaczRFID(false); //***********************************************WYGAS PIN OD RFID (albo tutaj albo przed ifem na odpalCzujnij, ale testy mowia, ze tutaj lepiej)
@@ -63,6 +67,8 @@ void loop()
   if (buttonState == HIGH)
   {
     zapal();
+    buzzAKCEPTACJA();
+    otworz();
   } 
   else if (buttonState == LOW)
   {
@@ -109,9 +115,9 @@ void zgas()
 }
 void wlaczRFID(boolean wlacz) {
   if (wlacz == true) { 
-    digitalWrite(txPin, LOW); //enables the RDIF reader and turns on the diode on the arduino
+    digitalWrite(txPin, LOW); //enables the RDIF reader 
   } 
-  else {                               //disables the RDIF reader and turns off the diode on the arduino
+  else {                               //disables the RDIF reader 
     digitalWrite(txPin, HIGH);   
   }
 }
@@ -200,8 +206,8 @@ void otworz()
   myservo.write(0);  //ustaw serwo na zamkniecie
   delay(200);
   myservo.write(170);              // ustaw serwo na maksymalna otwarcie
-  delay(2000);
+  delay(5000);
   myservo.write(0);  //ustaw serwo na zamkniecie
-  delay(200);
+  delay(1000);
   myservo.detach();
 }
